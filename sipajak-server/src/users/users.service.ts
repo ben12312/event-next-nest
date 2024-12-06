@@ -20,7 +20,14 @@ export class UsersService {
     user.email = createUserDto.email;
     user.username = createUserDto.username;
     user.password = await bcrypt.hash(createUserDto.password, HASHSALT);
-    return this.userRepository.save(user);
+    user.createdAt = new Date();
+    user.updatedAt = new Date();
+    this.userRepository.save(user);
+    return {
+      msg: 'Success',
+      code: 200,
+      data: user
+    }
   }
 
   async findAll(): Promise<User[]> {
@@ -46,14 +53,14 @@ export class UsersService {
   }
 
   async signIn(createUserDto: CreateUserDto) {
-    let { email, password } = createUserDto;    
-    let user = await this.userRepository.findOneBy({ email });
+    let { username, password } = createUserDto;    
+    let user = await this.userRepository.findOneBy({ username });
     if (user) {
       let hashCompare = await bcrypt.compare(password, user.password);
       if (hashCompare) {
         let loginUser = {
           id: user.id,
-          email: user.email,
+          username: user.username,
           token: ''
         }
         let token = await this.jwtService.sign(loginUser, {
@@ -67,10 +74,10 @@ export class UsersService {
           data: loginUser
         }
       } else {
-        return { msg: 'Wrong Password or Email', code: 400, data: {} }
+        return { msg: 'Wrong Password or Username', code: 400, data: {} }
       }
     } else {
-      return { msg: 'Wrong Password or Email', code: 400, data: {} }
+      return { msg: 'Wrong Password or Username', code: 400, data: {} }
     }
   }
 }

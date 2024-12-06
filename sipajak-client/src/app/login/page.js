@@ -2,19 +2,29 @@
 import fetchData from "@/fetch/fetch";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCookies } from 'next-client-cookies';
 
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter()
+    const [failLoginMsg, setFailLoginMsg] = useState('');
+    const router = useRouter();
+    const cookies = useCookies();
     
   useEffect(() => {
 
   }, []);
 
   const signInButton = async (params) => {
-    // let resSignIn = await fetchData('/login', 'POST', {})
-    router.push('/')
+    if (username == '' || password == '') return setFailLoginMsg('Username or Password can not be empty!')
+    let response = await fetchData('/users/signin', "POST", { username, password });
+    const data = await response.json();
+    if (data.code == 200) {
+        cookies.set('token', data.data.token);
+        router.push('/');
+    } else {
+        setFailLoginMsg(data.msg)
+    }
   };
 
   return (
@@ -41,7 +51,6 @@ export default function Login() {
                 <h3 className="font-semibold text-2xl text-gray-800">
                   Sign In{" "}
                 </h3>
-                <p className="text-gray-500">Please sign in to your account.</p>
               </div>
               <div className="space-y-5">
                 <div className="space-y-2">
@@ -51,8 +60,8 @@ export default function Login() {
                   <input
                     onChange={(e) => setUsername(e.target.value)}
                     className=" w-full text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
-                    type=""
-                    placeholder="mail@gmail.com"
+                    type="text"
+                    placeholder="Username"
                   />
                 </div>
                 <div className="space-y-2">
@@ -62,9 +71,10 @@ export default function Login() {
                   <input
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
-                    type=""
+                    type="password"
                     placeholder="Enter your password"
                   />
+                  <h6 className="text-sm" style={{ color: 'red'}}>{failLoginMsg}</h6>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
@@ -82,9 +92,7 @@ export default function Login() {
                     </label>
                   </div>
                   <div className="text-sm">
-                    <a href="#" className="text-green-400 hover:text-green-500">
-                      Forgot your password?
-                    </a>
+                    <a href="#" className="text-green-400 hover:text-green-500">Forgot your password?</a>
                   </div>
                 </div>
                 <div>
@@ -96,19 +104,21 @@ export default function Login() {
                     Sign in
                   </button>
                 </div>
+                <p style={{ color: 'black' }}>Dont have account? Register here <a onClick={() => router.push('/register')} className="text-green-400 hover:text-green-500"> Register</a></p>
               </div>
+
               <div className="pt-5 text-center text-gray-400 text-xs">
                 <span>
                   Copyright © 2021-2022
                   <a
-                    href="https://codepen.io/uidesignhub"
+                    href="https://www.sipajak.com/"
                     rel=""
                     target="_blank"
                     title="Ajimon"
                     className="text-green hover:text-green-500 "
                   >
                     {" "}
-                    Ben
+                    SiPajak
                   </a>
                 </span>
               </div>

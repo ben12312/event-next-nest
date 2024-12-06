@@ -16,4 +16,10 @@ export class User {
 
   @Column({ type: 'varchar' })
   password: string;
+
+  @Column({ type: Date })
+  createdAt: Date
+
+  @Column({ type: Date })
+  updatedAt: Date
 }

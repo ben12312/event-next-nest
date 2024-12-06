@@ -1,9 +1,13 @@
-const BASEURL = 'localhost:3000';
+const BASEURL = 'http://localhost:3000';
 
 async function fetchData(url, method, data, token) {
     let fetchOptions  = {
         method: method,
-        body: data
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     }
     if (token) fetchOptions.headers = {
         Authorization: `Bearer ${token}`,

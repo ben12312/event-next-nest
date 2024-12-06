@@ -8,9 +8,9 @@ export class Event {
   @Column({ type: 'varchar', length: 30 })
   title: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'varchar', length: 100 })
   description: string;
 
-  @Column({ type: 'date', length: 40 })
+  @Column({ type: 'date'})
   date: Date;
 }

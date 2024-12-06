@@ -12,8 +12,6 @@ export class EventService {
   ) {}
 
   create(createEventDto: CreateEventDto) {
-    console.log(createEventDto);
-    
     const event: Event = new Event();
     event.title = createEventDto.title;
     event.description = createEventDto.description;
@@ -22,18 +20,23 @@ export class EventService {
   }
 
   findAll() {
-    return `This action returns all event`;
+    return this.eventRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} event`;
+    return this.eventRepository.findOneBy({ id });
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+    const event: Event = new Event();
+    event.title = updateEventDto.title;
+    event.description = updateEventDto.description;
+    event.date = updateEventDto.date;
+    event.id = id;
+    return this.eventRepository.save(event);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} event`;
+    return this.eventRepository.delete(id);
   }
 }

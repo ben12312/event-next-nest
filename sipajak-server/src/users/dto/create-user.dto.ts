@@ -38,4 +38,8 @@ export class CreateUserDto {
       one special character`,
     })
     password: string;
+
+    createdAt: Date;
+
+    updatedAt: Date;
 }
